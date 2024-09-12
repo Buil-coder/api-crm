@@ -1,0 +1,14 @@
+*.env
+*env
+**env
+*static
+**static
+*__pycache__
+# *migrations
+*media
+**__pycache__
+# **migrations
+**__pycache__/*.py
+# **migrations/*.py
+db.sqlite3
+models-all.py
