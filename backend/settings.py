@@ -57,7 +57,6 @@ INSTALLED_APPS=[
     'channels',
     'apps.common',
     'apps.party',
-    
 ].__add__(ENV.apps_for_settings())
 
 if DEBUG : INSTALLED_APPS.append('django.contrib.staticfiles')
