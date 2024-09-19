@@ -5,10 +5,14 @@ class empresaUno_router(object):
 
     def db_for_read(self, model, **hints):
         if model._meta.app_label in self.route_app_labels: return ENV.countries()[0]
+        print(ENV.countries())  # Debería mostrar una lista con al menos 'empresaUno'
+
         return None
 
     def db_for_write(self, model, **hints):
         if model._meta.app_label in self.route_app_labels: return ENV.countries()[0]
+        print(ENV.countries())  # Debería mostrar una lista con al menos 'empresaUno'
+
         return None
 
     def allow_relation(self, obj1, obj2, **hints): return True

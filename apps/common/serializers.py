@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.common.models import Bank, Document
+from apps.common.models import Document
 
 class document_serializer(serializers.ModelSerializer):
     class Meta:
