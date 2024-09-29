@@ -57,7 +57,9 @@ INSTALLED_APPS=[
     'channels',
     'apps.common',
     'apps.party',
-].__add__(ENV.apps_for_settings())
+    *ENV.apps_for_settings(),  # Usa el operador * para expandir la lista
+    
+]
 
 if DEBUG : INSTALLED_APPS.append('django.contrib.staticfiles')
 
@@ -70,7 +72,7 @@ DATABASE_ROUTERS=[
 
 REST_FRAMEWORK={
     'DEFAULT_PERMISSION_CLASSES':(
-        'rest_framework.permissions.IsAuthenticated',
+        #'rest_framework.permissions.IsAuthenticated',
         'rest_framework.permissions.AllowAny'
     ),
     'DEFAULT_AUTHENTICATION_CLASSES':(
@@ -154,6 +156,11 @@ MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR, 'media')
 
 STATIC_URL='/static/'
+
+# Directorios donde Django buscará archivos estáticos adicionales
+STATICFILES_DIRS = [
+    BASE_DIR / "staticfiles",  # Puedes eliminar esta línea si no necesitas el directorio
+]
 
 if DEBUG:
     STATIC_ROOT=os.path.join(BASE_DIR, 'static')

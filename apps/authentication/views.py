@@ -20,6 +20,8 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 class RegisterUserView(APIView):
+    authentication_classes=[]
+    permission_classes=[]
     def post(self, request, *args, **kwargs):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():

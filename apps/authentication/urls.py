@@ -12,10 +12,9 @@ from .views import (
     
 )
 
-urlpatterns  = [
-    path('login/',auth_login_viewset.as_view()),
-    path('register/', RegisterUserView.as_view(), name='register'),
-    
+urlpatterns = [
+    path('login/', auth_login_viewset.as_view(), name='login'),
+    path('register/', RegisterUserView.as_view(), name='register'),  # Asegúrate de que esta línea esté presente
 ]
 
 if settings.DEBUG:

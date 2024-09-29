@@ -6,6 +6,7 @@ from rest_framework import permissions
 from django.views.static import serve
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
 
 schema_view=get_schema_view(
     openapi.Info(
@@ -21,9 +22,10 @@ schema_view=get_schema_view(
 )
 
 urlpatterns = [
-    path( route='auth/',        view=include('apps.authentication.urls') ),
-    path( route='common/',      view=include('apps.common.urls')         ),
-    path( route='party/',       view=include('apps.party.urls')          ),
+    path('admin/', admin.site.urls),
+    path('auth/', include('apps.authentication.urls')),  # Asegúrate de que esta URL sea correcta
+    path('common/', include('apps.common.urls')),        # Verifica que esto también sea correcto
+    path('party/', include('apps.party.urls')),          # Igualmente aquí
 ]
 
 if settings.DEBUG:
