@@ -2,7 +2,7 @@ from rest_framework import serializers
 from apps.common.models import Document
 
 from apps.common.models import (
-    Persona,
+    PersonaClient,
     Empresa,
     Proyecto,
     Unidad,
@@ -10,16 +10,18 @@ from apps.common.models import (
     CronogramaPagos,
     Cuota,
     Observaciones,
-    Grupo
+    Grupo,
+    PersonaStaff,
+    DetallePersona
 )
 
-class PersonaSerializer(serializers.ModelSerializer):
+class PersonaClientSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Persona
+        model = PersonaClient
         fields = '__all__'  # Puedes especificar los campos específicos si lo deseas
     
     def create(self, validated_data):
-        persona = Persona(**validated_data)
+        persona = PersonaClient(**validated_data)
         persona.save(using=self.context.get("tenant"))
         return persona
 
@@ -182,4 +184,40 @@ class document_serializer(serializers.ModelSerializer):
             getattr(instance, key)
             setattr(instance, key, value)
         instance.save(update_fields=validated_data.keys(), using=self.context.get("tenant"))
+        return instance
+    
+
+# 06-10-24 | nuevos serializers
+
+class PersonaStaffSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PersonaStaff
+        fields = '__all__'  # Puedes especificar los campos específicos si lo deseas
+    
+    def create(self, validated_data):
+        persona = PersonaStaff(**validated_data)
+        persona.save(using=self.context.get("tenant"))
+        return persona
+
+    def update(self, instance, validated_data):
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        instance.save(using=self.context.get("tenant"))
+        return instance
+  
+    
+class DetallePersonaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DetallePersona
+        fields = '__all__'  # Puedes especificar los campos específicos si lo deseas
+    
+    def create(self, validated_data):
+        persona = DetallePersona(**validated_data)
+        persona.save(using=self.context.get("tenant"))
+        return persona
+
+    def update(self, instance, validated_data):
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        instance.save(using=self.context.get("tenant"))
         return instance

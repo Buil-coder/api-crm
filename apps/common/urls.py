@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 
 from apps.common.views  import  (
     panel_common_document_viewset,
-    PersonaViewSet,
+    PersonaClientViewSet,
     EmpresaViewSet,
     ProyectoViewSet,
     UnidadViewSet,
@@ -12,12 +12,14 @@ from apps.common.views  import  (
     CronogramaPagosViewSet,
     CuotaViewSet,
     ObservacionesViewSet,
-    GrupoViewSet
+    GrupoViewSet,
+    PersonaStaffViewSet,
+    DetallePersonaViewSet
 )
 
 urlpatterns  = [
     path('document/', panel_common_document_viewset.as_view()),
-    path('personas/', PersonaViewSet.as_view(), name='persona-list'),
+    path('personaclient/', PersonaClientViewSet.as_view(), name='persona_client_list'),
     path('empresas/', EmpresaViewSet.as_view(), name='empresas'),
     path('proyectos/', ProyectoViewSet.as_view(), name='proyectos'),
     path('unidades/', UnidadViewSet.as_view(), name='unidades'),
@@ -26,6 +28,8 @@ urlpatterns  = [
     path('cuotas/', CuotaViewSet.as_view(), name='cuotas'),
     path('observaciones/', ObservacionesViewSet.as_view(), name='observaciones'),
     path('grupos/', GrupoViewSet.as_view(), name='grupos'),
+    path('personastaff/', PersonaStaffViewSet.as_view(), name='persona_staff_list'),
+    path('detallepersona/', DetallePersonaViewSet.as_view(), name='detalle_persona_list'),
 ]
 
 if settings.DEBUG:

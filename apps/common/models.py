@@ -1,4 +1,7 @@
 from django.db import models
+from django.utils import timezone
+from django.contrib.auth.models import User
+
 
 class Document(models.Model):
 
@@ -88,15 +91,6 @@ class Unidad(models.Model):
         return f'Unidad {self.manzana_lote}'
 
 
-class FichaDatosCliente(models.Model):
-    id_cpagos = models.IntegerField()
-    id_persona = models.IntegerField()
-    id_unidad = models.IntegerField()
-
-    def __str__(self):
-        return f'Ficha {self.id_persona}'
-
-
 class CronogramaPagos(models.Model):
     descripcion_cpagos = models.CharField(max_length=255)
     cuota_inicial = models.FloatField()
@@ -114,6 +108,20 @@ class CronogramaPagos(models.Model):
         return self.descripcion_cpagos
 
 
+class FichaDatosCliente(models.Model):
+    estado_legal = models.CharField(max_length=255)
+    fecha_cierre = models.DateField(max_length=255)
+    fecha_separacion = models.DateField()
+    cod_boleta = models.CharField(max_length=100)
+    asesor = models.CharField(max_length=255)
+
+    id_cpagos = models.ForeignKey(CronogramaPagos, on_delete=models.CASCADE)
+    id_lote = models.ForeignKey(Unidad, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Cronograma {self.id_cpagos} - Lote {self.id_lote}"
+
+
 class Cuota(models.Model):
     numero_cuotas = models.CharField(max_length=255)
     fecha_vencimiento = models.DateField()
@@ -125,34 +133,32 @@ class Cuota(models.Model):
         return f'Cuota {self.numero_cuotas}'
 
 
-class Persona(models.Model):
-    nombres_apellidos = models.CharField(max_length=255)
+class PersonaClient(models.Model):
+    nombres = models.CharField(max_length=255)
+    apellidos = models.CharField(max_length=255)
+    genero = models.CharField(max_length=255)
     celular = models.CharField(max_length=15)
-    dni = models.CharField(max_length=8)
-    correo = models.CharField(max_length=255)
-    conyuge = models.CharField(max_length=255)
-    direccion = models.CharField(max_length=255)
-    profesion = models.CharField(max_length=255)
+    correo = models.EmailField(max_length=255)
+    pais = models.CharField(max_length=100)
+    departamento = models.CharField(max_length=100)
+    provincia = models.CharField(max_length=100)
+    distrito = models.CharField(max_length=100)
+    fecha_creacion = models.DateField()
     ocupacion = models.CharField(max_length=255)
     centro_trabajo = models.CharField(max_length=255)
-    direccion_laboral = models.CharField(max_length=255)
-    antiguedad_laboral = models.CharField(max_length=255)
-    separacion = models.CharField(max_length=255)
-    nombre_rol = models.IntegerField()
-    nombre_area = models.IntegerField()
-    nombre_origen = models.CharField(max_length=255)
-    nombre_canal = models.CharField(max_length=255)
-    nombre_medio = models.CharField(max_length=255)
-    nombre_usuario = models.IntegerField()
+    tipo_documento = models.CharField(max_length=255)
+    num_documento = models.CharField(max_length=255)
+    conyuge = models.BooleanField()
+    telefono_fijo = models.CharField(max_length=10)
 
     def __str__(self):
-        return self.nombres_apellidos
+        return self.nombres
 
 
 class Observaciones(models.Model):
     descripcion_observaciones = models.CharField(max_length=255)
     adjuntar_informacion = models.CharField(max_length=255)
-    id_persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
+    id_persona_client = models.ForeignKey(PersonaClient, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.descripcion_observaciones
@@ -169,3 +175,41 @@ class Grupo(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+
+# 06-10-24 | nuevos modelos
+
+
+class DetallePersona(models.Model):
+    tipo_cliente = models.CharField(max_length=255)
+    usuario = models.BooleanField(default=False) 
+    canal = models.CharField(max_length=255)
+    medio = models.CharField(max_length=255)
+    area = models.CharField(max_length=255)
+    origen = models.CharField(max_length=255)
+    id_persona_client = models.ForeignKey(
+        PersonaClient, on_delete=models.CASCADE)
+    id_fichadc = models.ForeignKey(
+        FichaDatosCliente, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Persona cliente {self.id_persona_client} - Ficha de datos {self.id_fichadc}"
+
+
+class PersonaStaff(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    nombres = models.CharField(max_length=255)
+    apellidos = models.CharField(max_length=255)
+    area = models.CharField(max_length=255)
+    dni = models.CharField(max_length=8)
+    conyuge = models.BooleanField(default=False)
+    correo = models.EmailField(max_length=100)
+    celular = models.CharField(max_length=9)
+    fecha_inicio = models.DateField(default=timezone.now)  # Fecha por defecto: hoy
+    fecha_fin = models.DateField()
+    rol = models.CharField()
+
+    id_empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Persona staff {self.nombres}" 

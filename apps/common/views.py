@@ -6,7 +6,7 @@ from .models                    import Document
 from .serializers               import document_serializer
 
 from .models import (
-    Persona,
+    PersonaClient,
     Empresa,
     Proyecto,
     Unidad,
@@ -14,10 +14,12 @@ from .models import (
     CronogramaPagos,
     Cuota,
     Observaciones,
-    Grupo
+    Grupo,
+    PersonaStaff,
+    DetallePersona
 )
 from .serializers import (
-    PersonaSerializer,
+    PersonaClientSerializer,
     EmpresaSerializer,
     ProyectoSerializer,
     UnidadSerializer,
@@ -25,7 +27,9 @@ from .serializers import (
     CronogramaPagosSerializer,
     CuotaSerializer,
     ObservacionesSerializer,
-    GrupoSerializer
+    GrupoSerializer,
+    PersonaStaffSerializer,
+    DetallePersonaSerializer
 )
 
 class panel_common_document_viewset(APIView):
@@ -82,16 +86,16 @@ class panel_common_document_viewset(APIView):
         return Response(status=status.HTTP_202_ACCEPTED)
 
 
-class PersonaViewSet(APIView):
+class PersonaClientViewSet(APIView):
     authentication_classes=[]
     permission_classes=[]
     def get(self, request):
-        personas = Persona.objects.all()
-        serializer = PersonaSerializer(personas, many=True)
+        personas = PersonaClient.objects.all()
+        serializer = PersonaClientSerializer(personas, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = PersonaSerializer(data=request.data)
+        serializer = PersonaClientSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -221,6 +225,39 @@ class GrupoViewSet(APIView):
 
     def post(self, request):
         serializer = GrupoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+# 06-10-24 | nuevos views
+
+class PersonaStaffViewSet(APIView):
+    authentication_classes=[]
+    permission_classes=[]
+    def get(self, request):
+        personas = PersonaStaff.objects.all()
+        serializer = PersonaStaffSerializer(personas, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = PersonaStaffSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class DetallePersonaViewSet(APIView):
+    authentication_classes=[]
+    permission_classes=[]
+    def get(self, request):
+        detallepersona = DetallePersona.objects.all()
+        serializer = DetallePersonaSerializer(detallepersona, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = PersonaStaffSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
